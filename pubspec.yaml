@@ -13,4 +13,4 @@ dependencies:
   args: ^1.5.2
 
 executables:
-  vindecoder-service: main
+  vindecoder-service: server

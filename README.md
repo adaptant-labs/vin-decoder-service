@@ -23,7 +23,7 @@ On the server side, simply run the service directly:
 
 ```
 $ vindecoder-service
-VIN Decoder Service Registered on 0.0.0.0:4040/vin
+VIN Decoder Service Registered on 0.0.0.0:8080/vin
 ...
 ```
 
@@ -34,18 +34,33 @@ $ vindecoder-service --help
 usage: vindecoder-service [-p]
 
 -p, --port    Port to bind to
-              (defaults to "4040")
+              (defaults to "8080")
 
 -h, --help    Show usage info
 ```
 
-From the client side, this can be tested by sending a JSON-encoded VIN string, with the decoded VIN returned as a
-POST response:
+From the client side, this can be tested by sending a JSON-encoded VIN string:
 
 ```
-$ curl -X POST -H "Content-Type: application/json" -d '{ "vin": "WP0ZZZ99ZTS392124" }' localhost:4040
+$ curl -X POST -H "Content-Type: application/json" -d '{ "vin": "WP0ZZZ99ZTS392124" }' http://localhost:8080
+```
+
+with the decoded VIN returned in the POST response body:
+
+```
 {"wmi":"WP0","vds":"ZZZ99Z","vis":"TS392124","year":"1996","region":"EU","manufacturer":"Porsche","assembly_plant":"S","serial_number":"92124"}
 ```
+
+## Deployment
+
+Docker images are provided under [adaptant/vin-decoder-service][docker] and can be run without any special
+configuration:
+
+```
+$ docker run -d -p 8080:8080 adaptant/vin-decoder-service
+```
+
+[docker]: https://hub.docker.com/r/adaptant/vin-decoder-service
 
 ## Features and bugs
 

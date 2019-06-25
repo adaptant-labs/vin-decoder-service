@@ -7,7 +7,7 @@ Future main(List<String> args) async {
   exitCode = 0;
 
   final ArgParser parser = ArgParser()
-    ..addOption('port', abbr: 'p', defaultsTo: '4040', help: 'Port to bind to')
+    ..addOption('port', abbr: 'p', defaultsTo: '8080', help: 'Port to bind to')
     ..addFlag('help', abbr: 'h', negatable: false, help: 'Show usage info');
   final ArgResults results = parser.parse(args);
 
