@@ -14,32 +14,51 @@ The application can be activated from pub directly:
 $ pub global activate --source path <path to repository>
 Package vin_decoder_service is currently active at path "...".
 Installed executable vindecoder-service.
-Activated vin_decoder_service 0.0.1 at path "...".
+Activated vin_decoder_service 0.0.2 at path "...".
 ```
 
 ## Usage
 
-On the server side, simply run the service directly:
+The `vindecoder-service` can run standalone, or can register itself with a Consul Agent to ease with service discovery. 
+By default, an attempt to register with Consul will be made.
+
+To run standalone on the server side and inhibit Consul registration, the `--no-use-consul` flag may be specified:
 
 ```
-$ vindecoder-service
+$ vindecoder-service --no-use-consul
 VIN Decoder Service Registered on 0.0.0.0:8080/vin
 ...
 ```
 
-The following options can be set at run-time:
+otherwise, the default behaviour applies, and service registration will be attempted with the defined (or default)
+agent:
+
+```
+$ vindecoder-service
+Registering VIN Decoder Service with Consul Agent @ localhost:8500
+VIN Decoder Service Registered on 0.0.0.0:8080/vin
+...
+```
+
+An overview of supported commands and flags is provided below:
 
 ```
 $ vindecoder-service --help
-usage: vindecoder-service [-p]
+usage: vindecoder-service [-pcu]
 
--p, --port    Port to bind to
-              (defaults to "8080")
+-p, --port               Port to bind to
+                         (defaults to "8080")
 
--h, --help    Show usage info
+-c, --consul-agent       Consul Agent to register service with
+                         (defaults to "localhost:8500")
+
+-u, --[no-]use-consul    Use Consul for service registration
+                         (defaults to on)
+
+-h, --help               Show usage info
 ```
 
-From the client side, this can be tested by sending a JSON-encoded VIN string:
+From the client side, decoding may be tested by sending a JSON-encoded VIN string:
 
 ```
 $ curl -X POST -H "Content-Type: application/json" -d '{ "vin": "WP0ZZZ99ZTS392124" }' http://localhost:8080
