@@ -1,6 +1,6 @@
 name: vin_decoder_service
 description: A simple VIN decoding microservice
-version: 0.0.2+1
+version: 0.0.3
 homepage: https://www.github.com/adaptant-labs/vin-decoder-service
 author: Adaptant Labs <labs@adaptant.io>
 
