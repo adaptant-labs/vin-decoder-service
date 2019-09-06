@@ -61,7 +61,7 @@ usage: vindecoder-service [-pcu]
 From the client side, decoding may be tested by sending a JSON-encoded VIN string:
 
 ```
-$ curl -X POST -H "Content-Type: application/json" -d '{ "vin": "WP0ZZZ99ZTS392124" }' http://localhost:8080
+$ curl -X POST -H "Content-Type: application/json" -d '{ "vin": "WP0ZZZ99ZTS392124" }' http://localhost:8080/vin
 ```
 
 with the decoded VIN returned in the POST response body:
