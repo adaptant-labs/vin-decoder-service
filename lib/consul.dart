@@ -5,10 +5,15 @@ import 'package:http/http.dart' as http;
 Future<void> registerConsulService(String serviceId, String host,
     int port, String consulAgent) async {
   var url = 'http://' + consulAgent + '/v1/agent/service/register';
+  var healthUrl = 'http://' + host + ':' + port.toString() + '/health';
   var data = {
     'Name': serviceId,
     'Address': host,
     'Port': port,
+    'Check': {
+      'HTTP': healthUrl,
+      'Interval': '30s',
+    },
   };
   var response = await http.put(url, body: json.encode(data));
 

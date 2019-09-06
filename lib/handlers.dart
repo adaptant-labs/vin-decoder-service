@@ -40,6 +40,16 @@ Future<void> handleVinDecode(HttpRequest req) async {
   await resp.close();
 }
 
+Future<void> handleHealthCheck(HttpRequest req) async {
+  HttpResponse resp = req.response;
+
+  resp
+    ..statusCode = HttpStatus.ok
+    ..write('OK');
+
+  await resp.close();
+}
+
 void handleRequest(HttpRequest req) {
   ContentType contentType = req.headers.contentType;
   HttpResponse resp = req.response;
@@ -51,8 +61,13 @@ void handleRequest(HttpRequest req) {
     return;
   }
 
+  if (req.method == 'GET' && req.uri.path == '/health') {
+    handleHealthCheck(req);
+    return;
+  }
+
   // Explicitly return 404 for invalid endpoint requests
-  if (req.uri.path != '/vin') {
+  if (req.uri.path != '/vin' && req.uri.path != '/health') {
     resp
       ..statusCode = HttpStatus.notFound
       ..write('Invalid endpoint: ${req.uri.path}');
