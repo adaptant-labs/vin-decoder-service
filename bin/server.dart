@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:vin_decoder_service/handlers.dart';
 import 'package:vin_decoder_service/consul.dart';
+import 'package:vin_decoder_service/iputils.dart';
 import 'package:args/args.dart';
 import 'package:async/async.dart';
 
@@ -35,9 +36,16 @@ Future main(List<String> args) async {
   );
 
   if (useConsul == true) {
+    String host = server.address.address;
+
+    // While we bind to any address, require a valid IP for service registration
+    if (host == '0.0.0.0') {
+      // In this case we look up the first non-loopback IPv4 address.
+      host = await getLocalIP(InternetAddressType.IPv4);
+    }
+
     print("Registering VIN Decoder Service with Consul Agent @ " + consulAgent);
-    await registerConsulService("vin-decoder", server.address.address,
-              server.port, consulAgent);
+    await registerConsulService("vin-decoder", host, server.port, consulAgent);
   }
 
   print('VIN Decoder Service Registered on ' +

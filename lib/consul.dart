@@ -7,7 +7,7 @@ Future<void> registerConsulService(String serviceId, String host,
   var url = 'http://' + consulAgent + '/v1/agent/service/register';
   var data = {
     'Name': serviceId,
-    'Address': 'http://' + host,
+    'Address': host,
     'Port': port,
   };
   var response = await http.put(url, body: json.encode(data));
