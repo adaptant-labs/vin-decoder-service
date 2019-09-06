@@ -7,7 +7,7 @@ import 'package:vin_decoder_service/log.dart';
 Future<void> handleVinDecode(HttpRequest req) async {
   Map <String, String> vinData = Map<String, String>();
   HttpResponse resp = req.response;
-  String content = await req.transform(utf8.decoder).join();
+  String content = await utf8.decoder.bind(req).join();
   var data = jsonDecode(content) as Map;
   var vin = VIN(number: data['vin']);
 

@@ -1,3 +1,7 @@
+## 0.0.2+1
+
+- Minor fix for Dart SDK `HttpRequest` and `HttpClientResponse` breakage
+
 ## 0.0.2
 
 - Consul service registration and de-registration
