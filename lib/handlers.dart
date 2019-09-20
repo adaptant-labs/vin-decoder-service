@@ -9,7 +9,7 @@ Future<void> handleVinDecode(HttpRequest req) async {
   HttpResponse resp = req.response;
   String content = await utf8.decoder.bind(req).join();
   var data = jsonDecode(content) as Map;
-  var vin = VIN(number: data['vin']);
+  var vin = VIN(number: data['vin'], extended: true);
 
   if (!vin.valid(data['vin'])) {
     resp
@@ -30,6 +30,10 @@ Future<void> handleVinDecode(HttpRequest req) async {
   vinData['manufacturer'] = vin.getManufacturer();
   vinData['assembly_plant'] = vin.assemblyPlant();
   vinData['serial_number'] = vin.serialNumber();
+
+  vinData['make'] = await vin.getMakeAsync();
+  vinData['model'] = await vin.getModelAsync();
+  vinData['vehicle_type'] = await vin.getVehicleTypeAsync();
 
   resp
     ..statusCode = HttpStatus.ok

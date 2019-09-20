@@ -1,3 +1,7 @@
+## 0.0.4
+
+- Update to v0.1.0 of `vin-decoder-dart`, include make/model/type information.
+
 ## 0.0.3
 
 - Addition of `/health` endpoint for microservice health checking

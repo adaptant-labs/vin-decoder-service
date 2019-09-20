@@ -14,7 +14,7 @@ The application can be activated from pub directly:
 $ pub global activate --source path <path to repository>
 Package vin_decoder_service is currently active at path "...".
 Installed executable vindecoder-service.
-Activated vin_decoder_service 0.0.2 at path "...".
+Activated vin_decoder_service 0.0.4 at path "...".
 ```
 
 ## Usage
@@ -67,7 +67,7 @@ $ curl -X POST -H "Content-Type: application/json" -d '{ "vin": "WP0ZZZ99ZTS3921
 with the decoded VIN returned in the POST response body:
 
 ```
-{"wmi":"WP0","vds":"ZZZ99Z","vis":"TS392124","year":"1996","region":"EU","manufacturer":"Porsche","assembly_plant":"S","serial_number":"92124"}
+{"wmi":"WP0","vds":"ZZZ99Z","vis":"TS392124","year":"1996","region":"EU","manufacturer":"Porsche","assembly_plant":"S","serial_number":"92124","make":"Porsche","model":"911","vehicle_type":"Passenger Car"}
 ```
 
 ## Deployment
