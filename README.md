@@ -70,6 +70,16 @@ with the decoded VIN returned in the POST response body:
 {"wmi":"WP0","vds":"ZZZ99Z","vis":"TS392124","year":"1996","region":"EU","manufacturer":"Porsche","assembly_plant":"S","serial_number":"92124","make":"Porsche","model":"911","vehicle_type":"Passenger Car"}
 ```
 
+### Health Checking
+
+A `/health` endpoint is provided and registered with Consul by default - in practice, this simply checks continued
+connectivity to the Consul Agent from the service side. In the cases where Consul isn't used, it simply denotes the
+continued accessibility of the service itself.
+
+### Prometheus Metrics
+
+Prometheus metrics are also provided and can be scraped from the `/metrics` endpoint as expected.
+
 ## Deployment
 
 Docker images are provided under [adaptant/vin-decoder-service][docker] and can be run without any special
