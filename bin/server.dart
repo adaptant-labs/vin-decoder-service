@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:vin_decoder_service/handlers.dart';
 import 'package:vin_decoder_service/consul.dart';
+import 'package:vin_decoder_service/health.dart';
 import 'package:vin_decoder_service/iputils.dart';
 import 'package:vin_decoder_service/metrics.dart';
 import 'package:args/args.dart';
@@ -47,6 +48,13 @@ Future main(List<String> args) async {
       // In this case we look up the first non-loopback IPv4 address.
       host = await getLocalIP(InternetAddressType.IPv4);
     }
+
+    var agent = consulAgent.toString().split(':');
+    var consulAgentHost = agent.first;
+    var consulAgentPort = int.parse(agent.last);
+
+    // Add Consul Agent to list of services to Health check
+    await addHealthCheckService(consulAgentHost, consulAgentPort);
 
     print("Registering VIN Decoder Service with Consul Agent @ " + consulAgent);
     await registerConsulService("vin-decoder", host, server.port, consulAgent);

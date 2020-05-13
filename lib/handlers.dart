@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:prometheus_client/prometheus_client.dart';
 import 'package:vin_decoder/vin_decoder.dart';
+import 'package:vin_decoder_service/health.dart';
 import 'package:vin_decoder_service/log.dart';
 import 'package:vin_decoder_service/metrics.dart';
 import 'package:prometheus_client/format.dart' as format;
@@ -63,9 +64,16 @@ Future<void> handleMetrics(HttpRequest req) async {
 Future<void> handleHealthCheck(HttpRequest req) async {
   HttpResponse resp = req.response;
 
-  resp
-    ..statusCode = HttpStatus.ok
-    ..write('OK');
+  var status = await healthCheckServicesReachable();
+  if (status == true) {
+    resp
+      ..statusCode = HttpStatus.ok
+      ..write('OK');
+  } else {
+    resp
+      ..statusCode = HttpStatus.badGateway
+      ..write('Bad Gateway');
+  }
 
   logRequest(req, resp.statusCode);
 

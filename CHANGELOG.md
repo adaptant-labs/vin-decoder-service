@@ -1,3 +1,9 @@
+## 0.1.0
+
+- Add prometheus '/metrics' endpoint.
+- Check Consul Agent connectivity in services health check, if used.
+- Update to v0.1.1 of `vin-decoder-dart`, bump up other dependencies.
+
 ## 0.0.4
 
 - Update to v0.1.0 of `vin-decoder-dart`, include make/model/type information.
