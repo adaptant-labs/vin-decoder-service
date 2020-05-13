@@ -8,11 +8,12 @@ environment:
   sdk: '>=2.1.0 <3.0.0'
 
 dependencies:
-  vin_decoder: ^0.1.0
-  intl: ^0.15.8
-  args: ^1.5.2
-  http: ^0.12.0+2
-  async: ^2.3.0
+  vin_decoder: ^0.1.1
+  intl: ^0.16.1
+  args: ^1.6.0
+  http: ^0.12.1
+  async: ^2.4.1
+  prometheus_client: ^0.4.0+4
 
 executables:
   vindecoder-service: server

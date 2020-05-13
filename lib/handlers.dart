@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'package:prometheus_client/prometheus_client.dart';
 import 'package:vin_decoder/vin_decoder.dart';
 import 'package:vin_decoder_service/log.dart';
+import 'package:vin_decoder_service/metrics.dart';
+import 'package:prometheus_client/format.dart' as format;
 
 Future<void> handleVinDecode(HttpRequest req) async {
   Map <String, String> vinData = Map<String, String>();
@@ -10,6 +13,8 @@ Future<void> handleVinDecode(HttpRequest req) async {
   String content = await utf8.decoder.bind(req).join();
   var data = jsonDecode(content) as Map;
   var vin = VIN(number: data['vin'], extended: true);
+
+  totalRequestsCounter.inc();
 
   if (!vin.valid(data['vin'])) {
     resp
@@ -44,12 +49,25 @@ Future<void> handleVinDecode(HttpRequest req) async {
   await resp.close();
 }
 
+Future<void> handleMetrics(HttpRequest req) async {
+  HttpResponse resp = req.response;
+
+  format.write004(resp,
+      CollectorRegistry.defaultRegistry.collectMetricFamilySamples());
+
+  logRequest(req, resp.statusCode);
+
+  await resp.close();
+}
+
 Future<void> handleHealthCheck(HttpRequest req) async {
   HttpResponse resp = req.response;
 
   resp
     ..statusCode = HttpStatus.ok
     ..write('OK');
+
+  logRequest(req, resp.statusCode);
 
   await resp.close();
 }
@@ -70,8 +88,14 @@ void handleRequest(HttpRequest req) {
     return;
   }
 
+  if (req.method == 'GET' && req.uri.path == '/metrics') {
+    handleMetrics(req);
+    return;
+  }
+
   // Explicitly return 404 for invalid endpoint requests
-  if (req.uri.path != '/vin' && req.uri.path != '/health') {
+  if (req.uri.path != '/vin' && req.uri.path != '/health' &&
+      req.uri.path != 'metrics') {
     resp
       ..statusCode = HttpStatus.notFound
       ..write('Invalid endpoint: ${req.uri.path}');

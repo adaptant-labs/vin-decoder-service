@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:vin_decoder_service/handlers.dart';
 import 'package:vin_decoder_service/consul.dart';
 import 'package:vin_decoder_service/iputils.dart';
+import 'package:vin_decoder_service/metrics.dart';
 import 'package:args/args.dart';
 import 'package:async/async.dart';
 
@@ -30,6 +31,9 @@ Future main(List<String> args) async {
     print(parser.usage);
     exit(1);
   }
+
+  // Initialize prometheus request metrics
+  initMetrics();
 
   final HttpServer server = await HttpServer.bind(
     InternetAddress.anyIPv4, port,
@@ -76,7 +80,8 @@ Future main(List<String> args) async {
     await for (HttpRequest req in server) {
       handleRequest(req);
     }
-  } catch(_) {
+  } catch(e) {
+    print('Caught exception while handling requests: $e');
     print("Terminating...");
     await shutdown();
     exitCode = 2;
