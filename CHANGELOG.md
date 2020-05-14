@@ -1,3 +1,7 @@
+## 0.1.1
+
+- Make use of new `consul` API for Dart.
+
 ## 0.1.0
 
 - Add prometheus '/metrics' endpoint.

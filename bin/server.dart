@@ -7,8 +7,11 @@ import 'package:vin_decoder_service/iputils.dart';
 import 'package:vin_decoder_service/metrics.dart';
 import 'package:args/args.dart';
 import 'package:async/async.dart';
+import 'package:consul/consul.dart';
 
 Future main(List<String> args) async {
+  ConsulAgent agent;
+
   exitCode = 0;
 
   final ArgParser parser = ArgParser()
@@ -49,15 +52,30 @@ Future main(List<String> args) async {
       host = await getLocalIP(InternetAddressType.IPv4);
     }
 
-    var agent = consulAgent.toString().split(':');
-    var consulAgentHost = agent.first;
-    var consulAgentPort = int.parse(agent.last);
+    var agentHostPort = consulAgent.toString().split(':');
+    var consulAgentHost = agentHostPort.first;
+    var consulAgentPort = int.parse(agentHostPort.last);
+
+    var consul = Consul(host: consulAgentHost, port: consulAgentPort);
+    agent = ConsulAgent(consul: consul);
 
     // Add Consul Agent to list of services to Health check
     await addHealthCheckService(consulAgentHost, consulAgentPort);
 
+    // Register with Consul
+    var service = AgentServiceRegistration(
+      name: 'vin-decoder',
+      address: host,
+      port: port,
+      check: AgentServiceCheck(
+        name: 'consul-connectivity-check',
+        http: 'http://' + host + ':' + port.toString() + '/health',
+        interval: "30s",
+      ),
+    );
+
     print("Registering VIN Decoder Service with Consul Agent @ " + consulAgent);
-    await registerConsulService("vin-decoder", host, server.port, consulAgent);
+    await agent.registerService(service);
   }
 
   print('VIN Decoder Service Registered on ' +
@@ -71,9 +89,9 @@ Future main(List<String> args) async {
 
   // De-register the service from the Consul server on cleanup
   Future<void> shutdown() async {
-    if (useConsul == true) {
+    if (agent != null) {
       print("De-registering VIN Decoder Service from Consul Agent");
-      await deregisterConsulService("vin-decoder", consulAgent);
+      await agent.deregisterService('vin-decoder');
     }
     exit(-1);
   }
